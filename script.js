@@ -49,7 +49,7 @@ function addStudent() {
 function clearAddStudentForm() {
     $(inputIds[0]).val("");
     $(inputIds[1]).val("");
-    $(inputIds[3]).val("");
+    $(inputIds[2]).val("");
 }
 
 /**
@@ -58,10 +58,14 @@ function clearAddStudentForm() {
  */
 function calculateAverage() {
     var avg = 0;
+    if (students_array.length === 0) {
+        return avg;
+    }
     for (var i = 0; i < students_array.length; i++){
-        avg += students_array[i].grade;
+        avg += parseFloat(students_array[i].grade);
     }
     avg /= students_array.length;
+    avg = Math.round(avg);
     return avg;
 }
 
@@ -74,20 +78,20 @@ function updateData() {
 }
 
 /**
- * updateStudentList - loops through global student array and appends each objects data into the student-list-container > list-body
+ * updateStudentList - loops through global student array and appends each object's data into the student-list-container > list-body
+ * calls addStudentToDom once on each student in the student array
  */
 function updateStudentList() {
-    var $table_body = $("<tbody>");
-    for (var i = 0; i < students_array.length; i++) {
-        var $table_row = $("<tr>");
-        $table_row.append($('<th>').text(students_array[i].name));
-        $table_row.append($('<th>').text(students_array[i].course));
-        $table_row.append($('<th>').text(students_array[i].grade));
-        $table_row.append($('<th><button type="button" onclick = "deleteStudent(event)" class=" delete-row btn btn-danger">Delete</button></th>'));
+    //first clear out dom student_list
+    $(".student-list tbody > tr").remove();
 
-        $table_body.append($table_row);
+    for (var i = 0; i < students_array.length; i++ ) {
+        addStudentToDom(students_array[i]);
+        // $(students_array[i].name).appendTo('.student-list-container > .list-body');
+        // $(students_array[i].course).appendTo('.student-list-container > .list-body');
+        // $(students_array[i].grade).appendTo('.student-list-container > .list-body');
     }
-    $(".student-list tbody").replaceWith($table_body);
+
 }
 
 /**
@@ -99,9 +103,11 @@ function updateStudentList() {
 function addStudentToDom(studentObj) {
     var $table_row = $("<tr>");
     for (var attr in studentObj) {
-        var $tableCell = $('<td>').text(studentObj[index]);
-        $tableRow.append($tableCell);
+        $table_row.append($("<th>").text(studentObj[attr]));
     }
+    //the delete button is there, but it doesn't work yet
+    $table_row.append($('<th><button type="button" onclick = "deleteStudent(event)" class=" delete-row btn btn-danger">Delete</button></th>'));
+    $(".student-list tbody").append($table_row);
 }
 
 /**
@@ -116,3 +122,6 @@ function reset() {
 /**
  * Listen for the document to load and reset the data to the initial state
  */
+$(document).ready(function() {
+    reset();
+});
