@@ -33,15 +33,37 @@ function cancelClicked() {
  * @return undefined
  */
 function addStudent() {
-    var student = {
-        name: $(inputIds[0]).val(),
-        course: $(inputIds[1]).val(),
-        grade: $(inputIds[2]).val()
-    };
 
-    local_students_array.push(student);
-    updateData();
-    clearAddStudentForm();
+    $.ajax({
+        method:'post',
+        dataType: "json",
+        url: "http://s-apis.learningfuze.com/sgt/create",
+        data: {
+            api_key: "UNcvqWgEXK",
+            name: $(inputIds[0]).val(),
+            course: $(inputIds[1]).val(),
+            grade: $(inputIds[2]).val()
+        },
+        timeout: 1000,
+        success: function (serverResponse) {
+            console.log(serverResponse);
+
+            alert("We just tried to add " + $(inputIds[0]).val() + "'s info to the server!");
+            pullData();
+            updateData();
+            clearAddStudentForm()
+        },
+
+        error: function(xhr, textStatus,errorString){
+            alert("The server says:\n" + errorString);
+        }
+
+    });
+
+
+
+    // updateData();
+    // clearAddStudentForm();
 }
 
 /**
@@ -88,9 +110,6 @@ function updateStudentList() {
 
     for (var i = 0; i < local_students_array.length; i++) {
         addStudentToDom(local_students_array[i]);
-        // $(local_students_array[i].name).appendTo('.student-list-container > .list-body');
-        // $(local_students_array[i].course).appendTo('.student-list-container > .list-body');
-        // $(local_students_array[i].grade).appendTo('.student-list-container > .list-body');
     }
 
 }
