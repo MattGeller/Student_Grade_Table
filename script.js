@@ -5,8 +5,8 @@
  * student_array - global array to hold student objects
  * @type {Array}
  */
-var students_array = [];
-var ids_array = [];
+
+var local_students_array = [];
 /**
  * inputIds - id's of the elements that are used to add students
  * @type {string[]}
@@ -39,7 +39,7 @@ function addStudent() {
         grade: $(inputIds[2]).val()
     };
 
-    students_array.push(student);
+    local_students_array.push(student);
     updateData();
     clearAddStudentForm();
 }
@@ -59,13 +59,13 @@ function clearAddStudentForm() {
  */
 function calculateAverage() {
     var avg = 0;
-    if (students_array.length === 0) {
+    if (local_students_array.length === 0) {
         return avg;
     }
-    for (var i = 0; i < students_array.length; i++) {
-        avg += parseFloat(students_array[i].grade);
+    for (var i = 0; i < local_students_array.length; i++) {
+        avg += parseFloat(local_students_array[i].grade);
     }
-    avg /= students_array.length;
+    avg /= local_students_array.length;
     avg = Math.round(avg);
     return avg;
 }
@@ -86,11 +86,11 @@ function updateStudentList() {
     //first clear out dom student_list
     $(".student-list tbody > tr").remove();
 
-    for (var i = 0; i < students_array.length; i++) {
-        addStudentToDom(students_array[i]);
-        // $(students_array[i].name).appendTo('.student-list-container > .list-body');
-        // $(students_array[i].course).appendTo('.student-list-container > .list-body');
-        // $(students_array[i].grade).appendTo('.student-list-container > .list-body');
+    for (var i = 0; i < local_students_array.length; i++) {
+        addStudentToDom(local_students_array[i]);
+        // $(local_students_array[i].name).appendTo('.student-list-container > .list-body');
+        // $(local_students_array[i].course).appendTo('.student-list-container > .list-body');
+        // $(local_students_array[i].grade).appendTo('.student-list-container > .list-body');
     }
 
 }
@@ -103,9 +103,15 @@ function updateStudentList() {
 
 function addStudentToDom(studentObj) {
     var $table_row = $("<tr>");
-    for (var attr in studentObj) {
-        $table_row.append($("<td>").text(studentObj[attr]));
-    }
+    // for (var attr in studentObj) {
+    //     $table_row.append($("<td>").text(studentObj[attr]));
+    // }
+
+    $table_row.data('id',studentObj.id);
+
+    $table_row.append($("<td>").text(studentObj.name));
+    $table_row.append($("<td>").text(studentObj.course));
+    $table_row.append($("<td>").text(studentObj.grade));
 
     // $table_row.append($('<th><button type="button" onclick = "deleteStudent(event)" class=" delete-row btn btn-danger">Delete</button></th>'));
 
@@ -116,10 +122,38 @@ function addStudentToDom(studentObj) {
     });
 
     $delete_button.click(function () {
-        var index = $(this).parent().parent().index();
-        students_array.splice(index, 1);
-        ids_array.splice(index,1);
-        updateData();
+        var this_rows_id = $(this).parent().parent().data('id');
+
+
+        //this ajax call should delete the student from the server
+        $.ajax({
+            method: 'post',
+            dataType: "json",
+            url: "http://s-apis.learningfuze.com/sgt/delete",
+            data: {
+                api_key: "UNcvqWgEXK",
+                student_id: this_rows_id
+            },
+            timeout: 1000,
+            success: function (serverResponse) {
+                console.log(serverResponse);
+
+                alert("We're about to try to remove the student with id " + this_rows_id + " from the server!");
+
+                reset();
+                pullData();
+            },
+
+            error: function(xhr, textStatus,errorString){
+                alert("The server says:\n" + errorString);
+            }
+        });
+
+
+
+        // local_students_array.splice(index, 1);
+        // ids_array.splice(index,1);
+        // updateData();
     });
 
     $table_row.append($("<td>").append($delete_button)); // <- does this line look ok?
@@ -132,7 +166,7 @@ function addStudentToDom(studentObj) {
  * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
  */
 function reset() {
-    students_array = [];
+    local_students_array = [];
     updateData();
     updateStudentList();
 }
@@ -142,6 +176,7 @@ function reset() {
  */
 $(document).ready(function () {
     reset();
+    pullData();
 });
 
 function pullData() {
@@ -149,24 +184,31 @@ function pullData() {
         method:'post',
         dataType: "json",
         url: "http://s-apis.learningfuze.com/sgt/get",
-        data: {api_key: "UNcvqWgEXK"},
+        data: {
+            api_key: "UNcvqWgEXK"
+            // , "force-failure" : "server"
+        },
+        timeout: 5000,
 
-        success: function(thing) {
-        console.log(thing);
-        for (var i = 0; i < thing.data.length; i++) {
-            ids_array.push(thing.data[i].id);
+        success: function(objectFromServer) {
+        console.log(objectFromServer);
 
-            students_array.push({
-                name: thing.data[i].name,
-                course: thing.data[i].course,
-                grade: thing.data[i].grade
+
+
+        for (var i = 0; i < objectFromServer.data.length; i++) {
+
+            local_students_array.push({
+                id: objectFromServer.data[i].id,
+                name: objectFromServer.data[i].name,
+                course: objectFromServer.data[i].course,
+                grade: objectFromServer.data[i].grade
             });
         }
         updateData();
     },
 
-        error: function(){
-
+        error: function(xhr, textStatus,errorString){
+            alert("The server says:\n" + errorString);
         }
     })
 }
