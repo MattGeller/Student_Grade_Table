@@ -40,6 +40,32 @@ function addStudent() {
     };
 
     students_array.push(student);
+
+    //this ajax call should put the student into the server
+    $.ajax({
+        method: 'post',
+        dataType: "json",
+        url: "http://s-apis.learningfuze.com/sgt/create",
+        data: {
+            api_key: "UNcvqWgEXK",
+            name: student.name,
+            course: student.course,
+            grade: student.grade
+        },
+        timeout: 1000,
+        success: function (serverResponse) {
+            console.log(serverResponse);
+
+            alert("We just tried to add " + student.name + "'s info to the server!");
+            updateData();
+        },
+
+        error: function () {
+alert("Couldn't quite get in contact with the server ¯\\\_(ツ)_/¯")
+        }
+    });
+
+
     updateData();
     clearAddStudentForm();
 }
@@ -117,8 +143,39 @@ function addStudentToDom(studentObj) {
 
     $delete_button.click(function () {
         var index = $(this).parent().parent().index();
-        students_array.splice(index, 1);
-        ids_array.splice(index,1);
+
+
+        //this ajax call should delete the student from the server
+        $.ajax({
+            method: 'post',
+            dataType: "json",
+            url: "http://s-apis.learningfuze.com/sgt/delete",
+            data: {
+                api_key: "UNcvqWgEXK",
+                student_id: ids_array[index]
+            },
+            timeout: 1000,
+            success: function (serverResponse) {
+                console.log(serverResponse);
+
+                alert("We're about to try to remove the student with id " + ids_array[index] + " from the server!");
+
+                students_array.splice(index, 1);
+                ids_array.splice(index, 1);
+
+                updateData();
+            },
+
+            error: function () {
+                alert("Couldn't quite get in contact with the server ¯\\\_(ツ)_/¯")
+            }
+        });
+
+
+
+        // students_array.splice(index, 1);
+        // ids_array.splice(index, 1);
+
         updateData();
     });
 
@@ -142,30 +199,31 @@ function reset() {
  */
 $(document).ready(function () {
     reset();
+    pullData();
 });
 
 function pullData() {
     $.ajax({
-        method:'post',
+        method: 'post',
         dataType: "json",
         url: "http://s-apis.learningfuze.com/sgt/get",
         data: {api_key: "UNcvqWgEXK"},
 
-        success: function(thing) {
-        console.log(thing);
-        for (var i = 0; i < thing.data.length; i++) {
-            ids_array.push(thing.data[i].id);
+        success: function (thing) {
+            console.log("ajax object we get for pulling data from the server:", thing);
+            for (var i = 0; i < thing.data.length; i++) {
+                ids_array.push(thing.data[i].id);
 
-            students_array.push({
-                name: thing.data[i].name,
-                course: thing.data[i].course,
-                grade: thing.data[i].grade
-            });
-        }
-        updateData();
-    },
+                students_array.push({
+                    name: thing.data[i].name,
+                    course: thing.data[i].course,
+                    grade: thing.data[i].grade
+                });
+            }
+            updateData();
+        },
 
-        error: function(){
+        error: function () {
 
         }
     })
