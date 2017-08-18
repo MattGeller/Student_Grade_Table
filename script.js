@@ -105,8 +105,23 @@ function addStudentToDom(studentObj) {
     for (var attr in studentObj) {
         $table_row.append($("<th>").text(studentObj[attr]));
     }
-    //the delete button is there, but it doesn't work yet
-    $table_row.append($('<th><button type="button" onclick = "deleteStudent(event)" class=" delete-row btn btn-danger">Delete</button></th>'));
+
+    // $table_row.append($('<th><button type="button" onclick = "deleteStudent(event)" class=" delete-row btn btn-danger">Delete</button></th>'));
+
+    var $delete_button = $("<button>",{
+        type: "button",
+        class: "delete-row btn btn-danger",
+        text: "Delete"
+    });
+
+    $delete_button.click(function () {
+        var index = $(this).parent().index();
+        students_array.splice(index, 1);
+        updateData();
+    });
+
+    // $table_row.append($("<tr>").append($delete_button)); // <- does this line look ok?
+    $table_row.append($delete_button);
     $(".student-list tbody").append($table_row);
 }
 
