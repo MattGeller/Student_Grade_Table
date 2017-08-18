@@ -6,6 +6,7 @@
  * @type {Array}
  */
 var students_array = [];
+var ids_array = [];
 /**
  * inputIds - id's of the elements that are used to add students
  * @type {string[]}
@@ -61,7 +62,7 @@ function calculateAverage() {
     if (students_array.length === 0) {
         return avg;
     }
-    for (var i = 0; i < students_array.length; i++){
+    for (var i = 0; i < students_array.length; i++) {
         avg += parseFloat(students_array[i].grade);
     }
     avg /= students_array.length;
@@ -85,7 +86,7 @@ function updateStudentList() {
     //first clear out dom student_list
     $(".student-list tbody > tr").remove();
 
-    for (var i = 0; i < students_array.length; i++ ) {
+    for (var i = 0; i < students_array.length; i++) {
         addStudentToDom(students_array[i]);
         // $(students_array[i].name).appendTo('.student-list-container > .list-body');
         // $(students_array[i].course).appendTo('.student-list-container > .list-body');
@@ -103,25 +104,27 @@ function updateStudentList() {
 function addStudentToDom(studentObj) {
     var $table_row = $("<tr>");
     for (var attr in studentObj) {
-        $table_row.append($("<th>").text(studentObj[attr]));
+        $table_row.append($("<td>").text(studentObj[attr]));
     }
 
     // $table_row.append($('<th><button type="button" onclick = "deleteStudent(event)" class=" delete-row btn btn-danger">Delete</button></th>'));
 
-    var $delete_button = $("<button>",{
+    var $delete_button = $("<button>", {
         type: "button",
         class: "delete-row btn btn-danger",
         text: "Delete"
     });
 
     $delete_button.click(function () {
-        var index = $(this).parent().index();
+        var index = $(this).parent().parent().index();
         students_array.splice(index, 1);
+        ids_array.splice(index,1);
         updateData();
     });
 
-    // $table_row.append($("<tr>").append($delete_button)); // <- does this line look ok?
-    $table_row.append($delete_button);
+    $table_row.append($("<td>").append($delete_button)); // <- does this line look ok?
+    // $table_row.append($delete_button);
+
     $(".student-list tbody").append($table_row);
 }
 
@@ -137,6 +140,33 @@ function reset() {
 /**
  * Listen for the document to load and reset the data to the initial state
  */
-$(document).ready(function() {
+$(document).ready(function () {
     reset();
 });
+
+function pullData() {
+    $.ajax({
+        method:'post',
+        dataType: "json",
+        url: "http://s-apis.learningfuze.com/sgt/get",
+        data: {api_key: "UNcvqWgEXK"},
+
+        success: function(thing) {
+        console.log(thing);
+        for (var i = 0; i < thing.data.length; i++) {
+            ids_array.push(thing.data[i].id);
+
+            students_array.push({
+                name: thing.data[i].name,
+                course: thing.data[i].course,
+                grade: thing.data[i].grade
+            });
+        }
+        updateData();
+    },
+
+        error: function(){
+
+        }
+    })
+}
