@@ -34,8 +34,10 @@ function cancelClicked() {
  */
 function addStudent() {
 
+
+  
     $.ajax({
-        method:'post',
+        method:'post',      
         dataType: "json",
         url: "http://s-apis.learningfuze.com/sgt/create",
         data: {
@@ -43,10 +45,12 @@ function addStudent() {
             name: $(inputIds[0]).val(),
             course: $(inputIds[1]).val(),
             grade: $(inputIds[2]).val()
+
         },
         timeout: 1000,
         success: function (serverResponse) {
             console.log(serverResponse);
+
 
             alert("We just tried to add " + $(inputIds[0]).val() + "'s info to the server!");
             pullData();
@@ -64,6 +68,7 @@ function addStudent() {
 
     // updateData();
     // clearAddStudentForm();
+
 }
 
 /**
@@ -141,7 +146,9 @@ function addStudentToDom(studentObj) {
     });
 
     $delete_button.click(function () {
+
         var this_rows_id = $(this).parent().parent().data('id');
+
 
 
         //this ajax call should delete the student from the server
@@ -151,11 +158,14 @@ function addStudentToDom(studentObj) {
             url: "http://s-apis.learningfuze.com/sgt/delete",
             data: {
                 api_key: "UNcvqWgEXK",
+
                 student_id: this_rows_id
+
             },
             timeout: 1000,
             success: function (serverResponse) {
                 console.log(serverResponse);
+
 
                 alert("We're about to try to remove the student with id " + this_rows_id + " from the server!");
 
@@ -165,14 +175,17 @@ function addStudentToDom(studentObj) {
 
             error: function(xhr, textStatus,errorString){
                 alert("The server says:\n" + errorString);
+
             }
         });
+
 
 
 
         // local_students_array.splice(index, 1);
         // ids_array.splice(index,1);
         // updateData();
+
     });
 
     $table_row.append($("<td>").append($delete_button)); // <- does this line look ok?
@@ -200,7 +213,7 @@ $(document).ready(function () {
 
 function pullData() {
     $.ajax({
-        method:'post',
+        method: 'post',
         dataType: "json",
         url: "http://s-apis.learningfuze.com/sgt/get",
         data: {
@@ -211,6 +224,7 @@ function pullData() {
 
         success: function(objectFromServer) {
         console.log(objectFromServer);
+
 
 
 
@@ -228,6 +242,7 @@ function pullData() {
 
         error: function(xhr, textStatus,errorString){
             alert("The server says:\n" + errorString);
+
         }
     })
 }
