@@ -39,7 +39,7 @@ function addStudent() {
     $.ajax({
         method:'post',      
         dataType: "json",
-        url: "http://s-apis.learningfuze.com/sgt/create",
+        url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=insert",
         data: {
             api_key: "UNcvqWgEXK",
             name: $(inputIds[0]).val(),
@@ -132,7 +132,7 @@ function addStudentToDom(studentObj) {
     // }
 
     $table_row.data('id',studentObj.id);
-
+console.log('Hi! Here is the studentObj!',studentObj);
     $table_row.append($("<td>").text(studentObj.name));
     $table_row.append($("<td>").text(studentObj.course));
     $table_row.append($("<td>").text(studentObj.grade));
@@ -149,13 +149,11 @@ function addStudentToDom(studentObj) {
 
         var this_rows_id = $(this).parent().parent().data('id');
 
-
-
         //this ajax call should delete the student from the server
         $.ajax({
             method: 'post',
             dataType: "json",
-            url: "http://s-apis.learningfuze.com/sgt/delete",
+            url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=delete",
             data: {
                 api_key: "UNcvqWgEXK",
 
@@ -215,7 +213,7 @@ function pullData() {
     $.ajax({
         method: 'post',
         dataType: "json",
-        url: "http://s-apis.learningfuze.com/sgt/get",
+        url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=readAll",
         data: {
             api_key: "UNcvqWgEXK"
             // , "force-failure" : "server"
@@ -233,7 +231,7 @@ function pullData() {
             local_students_array.push({
                 id: objectFromServer.data[i].id,
                 name: objectFromServer.data[i].name,
-                course: objectFromServer.data[i].course,
+                course: objectFromServer.data[i].course_name,
                 grade: objectFromServer.data[i].grade
             });
         }
