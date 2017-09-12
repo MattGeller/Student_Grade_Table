@@ -133,7 +133,22 @@ function addStudentToDom(studentObj) {
 
     $table_row.data('id',studentObj.id);
 console.log('Hi! Here is the studentObj!',studentObj);
-    $table_row.append($("<td>").text(studentObj.name));
+    var nameElement = $("<td>").text(studentObj.name).attr("contenteditable",'true');
+    nameElement.focus(function(){
+        console.log('focused!',this);
+        if(!$(this).attr('oldValue')){
+            $(this).attr('oldValue',$(this).text());
+        }
+    });
+    nameElement.keyup(function(){
+        console.log('changed!');
+        if($(this).text()!==$(this).attr('oldValue')){
+            $(this).parents('tr').find('button.update-row').removeClass('hidden');
+        } else {
+            $(this).parents('tr').find('button.update-row').addClass('hidden');
+        }
+    });
+    $table_row.append(nameElement);
     $table_row.append($("<td>").text(studentObj.course));
     $table_row.append($("<td>").text(studentObj.grade));
 
@@ -143,6 +158,12 @@ console.log('Hi! Here is the studentObj!',studentObj);
         type: "button",
         class: "delete-row btn btn-danger",
         text: "Delete"
+    });
+
+    var $update_button = $("<button>", {
+        type: "button",
+        class: "update-row btn btn-primary hidden",
+        text: "Update"
     });
 
     $delete_button.click(function () {
@@ -186,7 +207,43 @@ console.log('Hi! Here is the studentObj!',studentObj);
 
     });
 
-    $table_row.append($("<td>").append($delete_button)); // <- does this line look ok?
+    $update_button.click(function() {
+
+        var this_rows_id = $(this).parent().parent().data('id');
+
+        var elements = $(this).parents('tr').find('td');
+        var values = [];
+        for(var i=0; i<elements.length-1; i++){
+            values.push(elements[i].innerText);
+        }
+        console.log(values);
+        $.ajax({
+            method: 'post',
+            dataType: 'json',
+            url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=update",
+            data: {
+                student_id: this_rows_id,
+                name: values[0],
+                course: values[1],
+                grade: values[2]
+            },
+            timeout: 1000,
+            success: function(serverResponse){
+                console.log(serverResponse);
+                console.log('We\'re gonna update something in the row with id ' + this_rows_id);
+
+                reset();
+                pullData();
+            },
+            error: function(xhr, textStatus, errorString){
+                alert('The server says:\n' + errorString)
+            }
+        })
+
+    });
+
+
+    $table_row.append($("<td>").append($delete_button, $update_button)); // <- does this line look ok?
     // $table_row.append($delete_button);
 
     $(".student-list tbody").append($table_row);
