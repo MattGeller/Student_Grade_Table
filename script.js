@@ -134,7 +134,7 @@ function addStudentToDom(studentObj) {
     $table_row.data('id',studentObj.id);
 console.log('Hi! Here is the studentObj!',studentObj);
     var nameElement = $("<td>").text(studentObj.name).attr("contenteditable",'true');
-    nameElement.focus(function(){
+        nameElement.focus(function(){
         console.log('focused!',this);
         if(!$(this).attr('oldValue')){
             $(this).attr('oldValue',$(this).text());
