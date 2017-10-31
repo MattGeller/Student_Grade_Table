@@ -1,6 +1,10 @@
 /**
  * Define all global variables here
  */
+
+//instantiate model
+var Model = new Model();
+
 /**
  * student_array - global array to hold student objects
  * @type {Array}
