@@ -118,8 +118,9 @@ function updateStudentList() {
     //first clear out dom student_list
     $(".student-list tbody > tr").remove();
 
-    for (var i = 0; i < local_students_array.length; i++) {
-        addStudentToDom(local_students_array[i]);
+    var list_from_model = Model.getList();
+    for (var i = 0; i < list_from_model.length; i++) {
+        addStudentToDom(list_from_model[i]);
     }
 
 }
@@ -228,7 +229,7 @@ function addStudentToDom(studentObj) {
             method: 'post',
             dataType: 'json',
             // url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=update",
-            url: "http://localhost/data.php?action=update",
+            url: "./back_end/data.php?action=update",
             data: {
                 student_id: this_rows_id,
                 name: values[0],
@@ -290,10 +291,9 @@ function pullData() {
 
 
 
-
+        //add every data element from the server to the model
         for (var i = 0; i < objectFromServer.data.length; i++) {
-
-            local_students_array.push({
+            Model.addItem({
                 id: objectFromServer.data[i].id,
                 name: objectFromServer.data[i].name,
                 course: objectFromServer.data[i].course_name,
