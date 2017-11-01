@@ -1,6 +1,10 @@
 /**
  * Define all global variables here
  */
+
+//instantiate model
+var Model = new Model();
+
 /**
  * student_array - global array to hold student objects
  * @type {Array}
@@ -39,7 +43,8 @@ function addStudent() {
     $.ajax({
         method:'post',      
         dataType: "json",
-        url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=insert",
+        // url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=insert",
+        url: "./back_end/data.php?action=insert",
         data: {
             api_key: "UNcvqWgEXK",
             name: $(inputIds[0]).val(),
@@ -220,7 +225,8 @@ console.log('Hi! Here is the studentObj!',studentObj);
         $.ajax({
             method: 'post',
             dataType: 'json',
-            url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=update",
+            // url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=update",
+            url: "http://localhost/data.php?action=update",
             data: {
                 student_id: this_rows_id,
                 name: values[0],
