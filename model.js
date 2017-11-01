@@ -1,7 +1,7 @@
 //defines the model for the front end, which is the local cache as well as its getters and setters
 function Model() {
     //private fields
-    var studentList = ['testval', 'testval2', 'testval3'];
+    var studentList = [];
 
     //returns the contents of the studentList
     this.getList = function(){
