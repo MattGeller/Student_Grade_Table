@@ -229,7 +229,7 @@ function addStudentToDom(studentObj) {
             method: 'post',
             dataType: 'json',
             // url: "http://localhost/prototypes_C7.17/php_SGTserver/data.php?action=update",
-            url: "http://localhost/data.php?action=update",
+            url: "./back_end/data.php?action=update",
             data: {
                 student_id: this_rows_id,
                 name: values[0],
