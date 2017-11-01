@@ -136,8 +136,9 @@ function addStudentToDom(studentObj) {
     //     $table_row.append($("<td>").text(studentObj[attr]));
     // }
 
+    //keep track of the id of this student by associating it with the row itself as data
     $table_row.data('id',studentObj.id);
-console.log('Hi! Here is the studentObj!',studentObj);
+    console.log('Hi! Here is the studentObj!',studentObj);
     var nameElement = $("<td>").text(studentObj.name).attr("contenteditable",'true');
         nameElement.focus(function(){
         console.log('focused!',this);
@@ -173,6 +174,7 @@ console.log('Hi! Here is the studentObj!',studentObj);
 
     $delete_button.click(function () {
 
+        //the delete button's grandparent is the row itself, which has the student object's id associated with it.
         var this_rows_id = $(this).parent().parent().data('id');
 
         //this ajax call should delete the student from the server
