@@ -13,6 +13,17 @@ function Model() {
         return outBuffer;
     };
 
+    //returns a list, but only the id and timestamp of each
+    this.getJustIDAndTimestamp = function () {
+        var outBuffer = [];
+
+        //TODO: make this spiffy
+        for (var i = 0; i < studentList.length; i++){
+            outBuffer.push({ id: studentList[i].id, last_modified: studentList[i].last_modified })
+        }
+        return outBuffer;
+    };
+
     //adds a new item into the studentList
     this.addItem = function(studentObj){
         studentList.push(studentObj);

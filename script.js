@@ -125,6 +125,14 @@ function updateStudentList() {
 
 }
 
+
+//sends
+function checkFreshness(){
+
+
+
+}
+
 /**
  * addStudentToDom - take in a student object, create html elements from the values and then append the elements
  * into the .student_list tbody
@@ -297,7 +305,8 @@ function pullData() {
                 id: objectFromServer.data[i].id,
                 name: objectFromServer.data[i].name,
                 course: objectFromServer.data[i].course_name,
-                grade: objectFromServer.data[i].grade
+                grade: objectFromServer.data[i].grade,
+                last_modified: objectFromServer.data[i].last_modified
             });
         }
         updateData();
