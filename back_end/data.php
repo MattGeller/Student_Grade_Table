@@ -31,7 +31,8 @@ switch($_GET['action']/*do a comparison switch on the get superglobal action*/){
 		break;
 
     case 'freshnessCheck':
-
+        include_once('dataApi/freshness_checker.php');
+        break;
 }
 
 //convert the $output variable to json, store the result in $outputJSON

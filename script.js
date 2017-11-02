@@ -126,11 +126,21 @@ function updateStudentList() {
 }
 
 
-//sends
+//sends ids and timestamps to the server
 function checkFreshness(){
+    var list = Model.getJustIDAndTimestamp();
+    console.log('sending this list to the server:', list);
+    $.ajax({
+        method:'post',
+        dataType: 'json',
+        url: './back_end/data.php?action=freshnessCheck',
+        data: {list},
+        success: function (serverResponse) {
+            console.log('response from the server:', serverResponse);
 
 
-
+        }
+    })
 }
 
 /**
