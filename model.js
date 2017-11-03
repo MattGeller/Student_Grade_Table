@@ -1,5 +1,7 @@
 //defines the model for the front end, which is the local cache as well as its getters and setters
 function Model() {
+    //TODO: model should store the average grade, and recalculate whenever a setter is invoked
+
     //private fields
     var studentList = [];
 

@@ -1,6 +1,21 @@
 <?php
+
+//pass in an id and this function will go through the list to find the date associated with that id or it will return false if it's not found
+function findDateByID($id){
+    global $list;
+
+    foreach ($list as $item){
+        if ($item['id'] == $id){
+            return $item['last_modified'];
+        }
+    }
+    return false;
+}
+
 //receive a list of ids and their timestamps from the front end
 $list = $_POST['list'];
+var_dump($list);
+die();
 
 //get data from the entire student table
 $student_select_query = 'SELECT * FROM `student_data`';
@@ -22,8 +37,13 @@ if (empty($result)) {
 
         //do a while loop to collect all the data
         while ($row = mysqli_fetch_assoc($result)) {
-            //add each row of data to the array
-            $student_table_info[] = $row;
+            //look at id from this particular row
+            $current_id = $row['id'];
+
+            //check if this row exists in the front end OR if the server has a more recent version
+
+
+
         }
 
         //compare all the timestamps and ids and make a list of all the ids that don't match
